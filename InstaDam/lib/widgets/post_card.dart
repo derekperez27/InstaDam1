@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../models/post.dart';
 import '../providers/app_provider.dart';
 import '../screens/post_detail_screen.dart';
+import '../utils/loc.dart';
 
 class PostCard extends StatelessWidget {
   final Post post;
@@ -40,7 +41,7 @@ class PostCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('${post.likes} likes'),
+                  Text(tr(context, 'likes', {'n': '${post.likes}'})),
                   Row(
                     children: [
                       IconButton(

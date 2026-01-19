@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../models/post.dart';
 import '../providers/app_provider.dart';
+import '../utils/loc.dart';
 
 class CreatePostScreen extends StatefulWidget {
   const CreatePostScreen({super.key});
@@ -24,7 +25,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   Future<void> _publish() async {
     final desc = _ctrl.text.trim();
     if (desc.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Introduce una descripción')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(tr(context, 'enter_description'))));
       return;
     }
     setState(() => _saving = true);
@@ -34,7 +35,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     await prov.addPost(post);
     if (mounted) {
       setState(() => _saving = false);
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Publicado')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(tr(context, 'published'))));
       Navigator.of(context).pop(true);
     }
   }
@@ -42,7 +43,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Crear publicación')),
+      appBar: AppBar(title: Text(tr(context, 'create_post'))),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -58,12 +59,12 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
             TextField(
               controller: _ctrl,
               maxLines: 4,
-              decoration: const InputDecoration(border: OutlineInputBorder(), labelText: 'Descripción'),
+              decoration: InputDecoration(border: const OutlineInputBorder(), labelText: tr(context, 'description')),
             ),
             const SizedBox(height: 12),
             _saving
                 ? const CircularProgressIndicator()
-                : ElevatedButton.icon(onPressed: _publish, icon: const Icon(Icons.send), label: const Text('Publicar'))
+                : ElevatedButton.icon(onPressed: _publish, icon: const Icon(Icons.send), label: Text(tr(context, 'publish')))
           ],
         ),
       ),

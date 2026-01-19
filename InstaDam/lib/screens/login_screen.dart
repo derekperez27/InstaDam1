@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../services/auth_service.dart';
 import '../providers/app_provider.dart';
+import '../utils/loc.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -36,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.pushReplacementNamed(context, '/home');
     } else {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Credenciales inválidas')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(tr(context, 'invalid_credentials'))));
     }
   }
 
@@ -45,20 +46,19 @@ class _LoginScreenState extends State<LoginScreen> {
     final username = _userCtrl.text.trim();
     final password = _passCtrl.text;
     final user = await _auth.register(username, password, remember: _remember);
-    if (user != null) {
+    if (user == null) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(tr(context, 'user_exists'))));
+    } else {
       if (!mounted) return;
       Provider.of<AppProvider>(context, listen: false).setCurrentUser(user);
       Navigator.pushReplacementNamed(context, '/home');
-    } else {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Usuario ya existe')));
-    }
   }
-
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Login / Registro')),
+      appBar: AppBar(title: Text(tr(context, 'login_register'))),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -81,15 +81,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   Checkbox(value: _remember, onChanged: (v) => setState(() => _remember = v ?? false)),
                   const SizedBox(width: 8),
-                  const Text('Recordar usuario')
+                  Text(tr(context, 'remember_user'))
                 ],
               ),
               const SizedBox(height: 12),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ElevatedButton(onPressed: _onLogin, child: const Text('Login')),
-                  ElevatedButton(onPressed: _onRegister, child: const Text('Register')),
+                  ElevatedButton(onPressed: _onLogin, child: Text(tr(context, 'login'))),
+                  ElevatedButton(onPressed: _onRegister, child: Text(tr(context, 'register'))),
                 ],
               )
             ],

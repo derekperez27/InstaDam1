@@ -18,6 +18,9 @@ class AppProvider extends ChangeNotifier {
 
   String? _profileName;
   String? get profileName => _profileName;
+  
+  bool _notificationsEnabled = true;
+  bool get notificationsEnabled => _notificationsEnabled;
 
   final StorageService _storage = StorageService();
   final DbService _db = DbService();
@@ -50,6 +53,7 @@ class AppProvider extends ChangeNotifier {
     // load language and profile
     _language = _storage.getLanguage();
     _profileName = _storage.getProfileName();
+    _notificationsEnabled = _storage.getNotificationsEnabled();
   }
 
   void setDarkMode(bool value) {
@@ -82,6 +86,12 @@ class AppProvider extends ChangeNotifier {
   Future<void> setProfileName(String name) async {
     _profileName = name;
     await _storage.setProfileName(name);
+    notifyListeners();
+  }
+
+  Future<void> setNotificationsEnabled(bool enabled) async {
+    _notificationsEnabled = enabled;
+    await _storage.setNotificationsEnabled(enabled);
     notifyListeners();
   }
 

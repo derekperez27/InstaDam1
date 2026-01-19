@@ -30,6 +30,10 @@ class StorageService {
   Future<void> setLanguage(String code) async => await _prefs?.setString('language', code);
   String getLanguage() => _prefs?.getString('language') ?? 'en';
 
+  // Notifications (simulated)
+  Future<void> setNotificationsEnabled(bool enabled) async => await _prefs?.setBool('notifications_enabled', enabled);
+  bool getNotificationsEnabled() => _prefs?.getBool('notifications_enabled') ?? true;
+
   // Profile fields
   Future<void> setProfileName(String name) async => await _prefs?.setString('profile_name', name);
   String? getProfileName() => _prefs?.getString('profile_name');

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../models/post.dart';
 import '../models/comment.dart';
 import '../providers/app_provider.dart';
+import '../utils/loc.dart';
 
 class PostDetailScreen extends StatefulWidget {
   final Post post;
@@ -50,7 +51,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     final prov = Provider.of<AppProvider>(context);
     final comments = prov.commentsForPost(widget.post.id ?? 0);
     return Scaffold(
-      appBar: AppBar(title: const Text('Publicación')),
+      appBar: AppBar(title: Text(tr(context, 'post'))),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : Column(
@@ -62,7 +63,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                     Text(widget.post.description),
                     const SizedBox(height: 8),
                     Row(children: [
-                      Text('${widget.post.likes} likes', style: const TextStyle(fontWeight: FontWeight.w600)),
+                      Text(tr(context, 'likes', {'n': '${widget.post.likes}'}), style: const TextStyle(fontWeight: FontWeight.w600)),
                       const SizedBox(width: 12),
                       IconButton(
                           onPressed: prov.currentUser == null
@@ -77,7 +78,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 const Divider(),
                 Expanded(
                   child: comments.isEmpty
-                      ? const Center(child: Text('No hay comentarios'))
+                      ? Center(child: Text(tr(context, 'no_comments')))
                       : ListView.builder(
                           itemCount: comments.length,
                           itemBuilder: (_, i) => ListTile(
