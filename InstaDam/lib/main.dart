@@ -5,9 +5,16 @@ import 'package:provider/provider.dart';
 import 'routes/app_routes.dart';
 import 'themes/app_theme.dart';
 import 'providers/app_provider.dart';
+import 'services/storage_service.dart';
+import 'services/db_service.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await StorageService().init();
+  await DbService().database; // initialize DB
+  // ensure default seed users exist
+  await DbService().seedDefaultUsers();
+
   runApp(
     ChangeNotifierProvider(
       create: (_) => AppProvider(),
