@@ -3,7 +3,14 @@ import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
 
 String tr(BuildContext context, String key, [Map<String, String>? args]) {
-  final prov = Provider.of<AppProvider>(context);
+  AppProvider prov;
+  try {
+    prov = Provider.of<AppProvider>(context);
+  } catch (_) {
+    // In some contexts (event handlers) listening is not allowed. Fall back to
+    // a non-listening lookup so tr() can be used from callbacks.
+    prov = Provider.of<AppProvider>(context, listen: false);
+  }
   final lang = prov.language;
 
   const Map<String, Map<String, String>> _t = {
