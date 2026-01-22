@@ -6,7 +6,7 @@ import '../providers/app_provider.dart';
 import '../utils/loc.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -191,13 +191,13 @@ class _LoginScreenState extends State<LoginScreen> {
 }
 
 class _DiagonalTexturePainter extends CustomPainter {
-  final double opacity;
-  const _DiagonalTexturePainter({this.opacity = 0.02});
+  static const double _opacity = 0.02;
+  const _DiagonalTexturePainter();
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.white.withOpacity(opacity)
+      ..color = Colors.white.withAlpha((_opacity * 255).round())
       ..strokeWidth = 1.0
       ..isAntiAlias = true;
 
@@ -208,7 +208,7 @@ class _DiagonalTexturePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _DiagonalTexturePainter oldDelegate) => oldDelegate.opacity != opacity;
+  bool shouldRepaint(covariant _DiagonalTexturePainter oldDelegate) => false;
 }
  
 

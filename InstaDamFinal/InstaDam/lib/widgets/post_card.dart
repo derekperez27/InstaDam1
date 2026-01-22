@@ -12,7 +12,7 @@ import '../utils/loc.dart';
 
 class PostCard extends StatelessWidget {
   final Post post;
-  const PostCard({Key? key, required this.post}) : super(key: key);
+  const PostCard({super.key, required this.post});
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,7 @@ class PostCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: Colors.white10, width: 1),
               boxShadow: [
-                BoxShadow(color: Colors.black.withOpacity(0.45), blurRadius: 16, offset: const Offset(0, 8)),
+                BoxShadow(color: Colors.black.withAlpha((0.45 * 255).round()), blurRadius: 16, offset: const Offset(0, 8)),
               ],
             ),
             child: ClipRRect(
@@ -94,26 +94,27 @@ class PostCard extends StatelessWidget {
                           onSelected: (v) async {
                             if (v == 'delete') {
                               if (post.id == null) return;
+                              final messenger = ScaffoldMessenger.of(context);
                               final confirm = await showDialog<bool>(
                                 context: context,
                                 builder: (ctx) => AlertDialog(
-                                  title: Text(tr(context, 'delete_post') ?? 'Delete post'),
-                                  content: Text(tr(context, 'delete_post_confirm') ?? 'Are you sure you want to delete this post?'),
+                                  title: Text(tr(ctx, 'delete_post')),
+                                  content: Text(tr(ctx, 'delete_post_confirm')),
                                   actions: [
-                                    TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(tr(context, 'cancel') ?? 'Cancel')),
-                                    TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(tr(context, 'delete') ?? 'Delete')),
+                                    TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(tr(ctx, 'cancel'))),
+                                    TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(tr(ctx, 'delete'))),
                                   ],
                                 ),
                               );
                               if (confirm == true) {
                                 await prov.deletePost(post.id!);
-                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(tr(context, 'post_deleted') ?? 'Post deleted')));
+                                messenger.showSnackBar(const SnackBar(content: Text('Post deleted')));
                               }
                             }
                           },
                           itemBuilder: (ctx) => [
                             if (prov.currentUser?.id == post.userId)
-                              PopupMenuItem(value: 'delete', child: Text(tr(context, 'delete') ?? 'Delete')),
+                              PopupMenuItem(value: 'delete', child: Text(tr(ctx, 'delete'))),
                           ],
                         ),
                       ],
@@ -131,7 +132,7 @@ class PostCard extends StatelessWidget {
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
-                          colors: [Colors.transparent, Colors.black.withOpacity(0.6)],
+                          colors: [Colors.transparent, Colors.black.withAlpha((0.6 * 255).round())],
                         ),
                       ),
                       child: Column(

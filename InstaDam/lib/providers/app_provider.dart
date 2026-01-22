@@ -27,9 +27,9 @@ class AppProvider extends ChangeNotifier {
 
   List<Post> _posts = [];
   List<Post> get posts => _posts;
-  Map<int, List<Comment>> _comments = {};
+  final Map<int, List<Comment>> _comments = {};
   List<Comment> commentsForPost(int postId) => _comments[postId] ?? [];
-  Map<int, bool> _likedByMe = {};
+  final Map<int, bool> _likedByMe = {};
   bool isLikedByMe(int postId) => _likedByMe[postId] ?? false;
 
   AppProvider() {

@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
@@ -22,13 +21,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> _export() async {
     setState(() => _exporting = true);
+    final messenger = ScaffoldMessenger.of(context);
     try {
       final dir = await getApplicationDocumentsDirectory();
       final out = path.join(dir.path, 'insta_export.json');
       final json = await DbService().exportDatabaseToJson(outputFilePath: out, pretty: true);
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(tr(context, 'exported_to', {'path': out, 'bytes': '${json.length}'}))));
+      messenger.showSnackBar(SnackBar(content: Text('Exported to $out (${json.length} bytes)')));
     } catch (e) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Export failed: $e')));
+      messenger.showSnackBar(SnackBar(content: Text('Export failed: $e')));
     } finally {
       if (mounted) setState(() => _exporting = false);
     }
@@ -36,22 +36,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> _import() async {
     setState(() => _exporting = true);
+    final messenger = ScaffoldMessenger.of(context);
+    final prov = Provider.of<AppProvider>(context, listen: false);
     try {
       final dir = await getApplicationDocumentsDirectory();
       final inPath = path.join(dir.path, 'insta_export.json');
       final f = File(inPath);
       if (!await f.exists()) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(tr(context, 'no_import_file'))));
+        messenger.showSnackBar(const SnackBar(content: Text('No import file found')));
         return;
       }
       final json = await f.readAsString();
       await DbService().importDatabaseFromJson(json, replaceExisting: true);
       // reload posts
-      final prov = Provider.of<AppProvider>(context, listen: false);
       await prov.loadPosts();
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(tr(context, 'import_completed'))));
+      messenger.showSnackBar(const SnackBar(content: Text('Import completed')));
     } catch (e) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(tr(context, 'import_failed', {'err': '$e'}))));
+      messenger.showSnackBar(SnackBar(content: Text('Import failed: $e')));
     } finally {
       if (mounted) setState(() => _exporting = false);
     }

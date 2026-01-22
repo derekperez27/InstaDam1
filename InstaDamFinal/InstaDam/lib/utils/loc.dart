@@ -13,7 +13,7 @@ String tr(BuildContext context, String key, [Map<String, String>? args]) {
   }
   final lang = prov.language;
 
-  const Map<String, Map<String, String>> _t = {
+  const Map<String, Map<String, String>> translations = {
     'en': {
       'feed': 'Feed',
       'login_register': 'Login / Register',
@@ -88,7 +88,7 @@ String tr(BuildContext context, String key, [Map<String, String>? args]) {
     }
   };
 
-  var s = _t[lang]?[key] ?? _t['en']?[key] ?? key;
+  var s = translations[lang]?[key] ?? translations['en']?[key] ?? key;
   if (args != null) {
     args.forEach((k, v) {
       s = s.replaceAll('{$k}', v);

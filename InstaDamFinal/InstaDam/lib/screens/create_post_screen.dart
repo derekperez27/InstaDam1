@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 
 import '../models/post.dart';
@@ -95,6 +96,8 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
       if (path != null) {
         setState(() => _imagePath = path);
       }
-    } catch (e) {}
+    } catch (e) {
+      if (kDebugMode) debugPrint('Image pick failed: $e');
+    }
   }
 }

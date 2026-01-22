@@ -100,3 +100,11 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+dependency_overrides:
+  file_picker_windows:
+    path: packages/file_picker_windows
+  file_picker_macos:
+    path: packages/file_picker_macos
+  file_picker_linux:
+    path: packages/file_picker_linux

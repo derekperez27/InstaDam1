@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../models/user.dart';
@@ -20,7 +19,9 @@ Future<void> main() async {
     debugPrint('Exported DB to $outPath (${json.length} bytes)');
     // also print users for quick check
     final users = await (await db.database).query('users');
-    for (final r in users) debugPrint('user: ${r['username']}');
+    for (final r in users) {
+      debugPrint('user: ${r['username']}');
+    }
   } catch (e) {
     debugPrint('Error: $e');
   } finally {

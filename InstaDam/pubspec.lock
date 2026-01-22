@@ -97,6 +97,27 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.5.0"
+  file_picker_linux:
+    dependency: "direct overridden"
+    description:
+      path: "packages/file_picker_linux"
+      relative: true
+    source: path
+    version: "5.0.1"
+  file_picker_macos:
+    dependency: "direct overridden"
+    description:
+      path: "packages/file_picker_macos"
+      relative: true
+    source: path
+    version: "5.0.1"
+  file_picker_windows:
+    dependency: "direct overridden"
+    description:
+      path: "packages/file_picker_windows"
+      relative: true
+    source: path
+    version: "5.0.1"
   flutter:
     dependency: "direct main"
     description: flutter

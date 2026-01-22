@@ -1,0 +1,9 @@
+name: file_picker_macos
+version: 5.0.1
+description: Local shim for tests
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
