@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,6 +18,7 @@ class CreatePostScreen extends StatefulWidget {
 class _CreatePostScreenState extends State<CreatePostScreen> {
   final _ctrl = TextEditingController();
   bool _saving = false;
+  String? _imagePath;
 
   @override
   void dispose() {
@@ -31,7 +35,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     setState(() => _saving = true);
     final prov = Provider.of<AppProvider>(context, listen: false);
     final userId = prov.currentUser?.id ?? 0;
-    final post = Post(userId: userId, imagePath: '', description: desc, createdAt: DateTime.now().millisecondsSinceEpoch);
+    final post = Post(userId: userId, imagePath: _imagePath ?? '', description: desc, createdAt: DateTime.now().millisecondsSinceEpoch);
     await prov.addPost(post);
     if (mounted) {
       setState(() => _saving = false);
@@ -48,12 +52,24 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // simple placeholder for image
-            Container(
-              height: 180,
-              width: double.infinity,
-              color: Colors.grey[300],
-              child: const Icon(Icons.image, size: 64, color: Colors.white70),
+            // image picker / preview
+            GestureDetector(
+              onTap: _pickImage,
+              child: Container(
+                height: 280,
+                width: double.infinity,
+                decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(8)),
+                child: _imagePath == null
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.add_a_photo, size: 36, color: Colors.black54),
+                          const SizedBox(height: 8),
+                          Text(tr(context, 'tap_to_add_image'))
+                        ],
+                      )
+                    : ClipRRect(borderRadius: BorderRadius.circular(8), child: Image.file(File(_imagePath!), fit: BoxFit.cover)),
+              ),
             ),
             const SizedBox(height: 12),
             TextField(
@@ -69,5 +85,16 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _pickImage() async {
+    try {
+      final result = await FilePicker.platform.pickFiles(type: FileType.image);
+      if (result == null) return;
+      final path = result.files.single.path;
+      if (path != null) {
+        setState(() => _imagePath = path);
+      }
+    } catch (e) {}
   }
 }

@@ -32,10 +32,17 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final prov = Provider.of<AppProvider>(context);
     return Scaffold(
-      appBar: AppBar(title: Text(tr(context, 'feed')), actions: [
-        IconButton(onPressed: () => Navigator.of(context).pushNamed('/profile'), icon: const Icon(Icons.person)),
-        IconButton(onPressed: () => Navigator.of(context).pushNamed('/settings'), icon: const Icon(Icons.settings)),
-      ]),
+      backgroundColor: const Color(0xFF3A3A3F),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Text(tr(context, 'feed'), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+        iconTheme: const IconThemeData(color: Colors.white),
+        actions: [
+          IconButton(onPressed: () => Navigator.of(context).pushNamed('/profile'), icon: const Icon(Icons.person)),
+          IconButton(onPressed: () => Navigator.of(context).pushNamed('/settings'), icon: const Icon(Icons.settings)),
+        ],
+      ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : prov.posts.isEmpty

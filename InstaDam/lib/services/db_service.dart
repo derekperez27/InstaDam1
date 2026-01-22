@@ -99,6 +99,13 @@ class DbService {
     return null;
   }
 
+  Future<User?> getUserById(int id) async {
+    final db = await database;
+    final maps = await db.query('users', where: 'id = ?', whereArgs: [id]);
+    if (maps.isNotEmpty) return User.fromMap(maps.first);
+    return null;
+  }
+
   // Posts
   Future<int> insertPost(Post p) async {
     final db = await database;
@@ -138,6 +145,14 @@ class DbService {
     await db.delete('likes', where: 'postId = ? AND userId = ?', whereArgs: [postId, userId]);
     final count = await getLikesCount(postId);
     await updatePostLikes(postId, count);
+  }
+
+  Future<int> deletePost(int postId) async {
+    final db = await database;
+    // remove likes and comments referencing the post, then remove post
+    await db.delete('likes', where: 'postId = ?', whereArgs: [postId]);
+    await db.delete('comments', where: 'postId = ?', whereArgs: [postId]);
+    return await db.delete('posts', where: 'id = ?', whereArgs: [postId]);
   }
 
   Future<int> getLikesCount(int postId) async {

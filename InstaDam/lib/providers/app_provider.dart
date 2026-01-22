@@ -160,6 +160,17 @@ class AppProvider extends ChangeNotifier {
     } catch (_) {}
   }
 
+  Future<void> deletePost(int postId) async {
+    try {
+      await _db.deletePost(postId);
+      // remove locally if present
+      _posts.removeWhere((p) => p.id == postId);
+      _comments.remove(postId);
+      _likedByMe.remove(postId);
+      notifyListeners();
+    } catch (_) {}
+  }
+
   Future<void> logout() async {
     _currentUser = null;
     await _storage.clearRememberedUser();
