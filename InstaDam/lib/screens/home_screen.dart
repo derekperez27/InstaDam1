@@ -31,30 +31,64 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final prov = Provider.of<AppProvider>(context);
+    // Use vivid, warm accent that matches dark mode palette
+    const Color darkAccent = Color(0xFF5D068A);
+    final Color accent = darkAccent;
+
     return Scaffold(
-      backgroundColor: const Color(0xFF3A3A3F),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: Text(tr(context, 'feed'), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
-        iconTheme: const IconThemeData(color: Colors.white),
-        actions: [
-          IconButton(onPressed: () => Navigator.of(context).pushNamed('/profile'), icon: const Icon(Icons.person)),
-          IconButton(onPressed: () => Navigator.of(context).pushNamed('/settings'), icon: const Icon(Icons.settings)),
-        ],
-      ),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : prov.posts.isEmpty
-              ? Center(child: Text(tr(context, 'no_posts')))
-              : RefreshIndicator(
-                  onRefresh: () => prov.loadPosts(),
-                  child: ListView.builder(
-                    itemCount: prov.posts.length,
-                    itemBuilder: (context, i) => PostCard(post: prov.posts[i]),
-                  ),
+      // gradient background for a more vivid look
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Colors.grey.shade900, accent.withAlpha(30)],
+          ),
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                child: Row(
+                  children: [
+                    IconButton(
+                      onPressed: () => Navigator.of(context).maybePop(),
+                      icon: const Icon(Icons.arrow_back, color: Colors.white),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(tr(context, 'feed'), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 20)),
+                    const Spacer(),
+                    IconButton(onPressed: () => Navigator.of(context).pushNamed('/profile'), icon: const Icon(Icons.person, color: Colors.white)),
+                    IconButton(onPressed: () => Navigator.of(context).pushNamed('/settings'), icon: const Icon(Icons.settings, color: Colors.white)),
+                  ],
                 ),
+              ),
+              Expanded(
+                child: _loading
+                    ? const Center(child: CircularProgressIndicator())
+                    : prov.posts.isEmpty
+                        ? Center(child: Text(tr(context, 'no_posts'), style: const TextStyle(color: Colors.white70)))
+                        : RefreshIndicator(
+                            color: accent,
+                            onRefresh: () => prov.loadPosts(),
+                            child: ListView.separated(
+                              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+                              itemCount: prov.posts.length,
+                              separatorBuilder: (context, index) => const SizedBox(height: 14),
+                              itemBuilder: (context, i) => PostCard(
+                                post: prov.posts[i],
+                                // pass accent color to PostCard if it supports it (it will ignore if not)
+                              ),
+                            ),
+                          ),
+              ),
+            ],
+          ),
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: accent,
         onPressed: () async {
           final created = await Navigator.of(context).push(MaterialPageRoute(builder: (_) => const CreatePostScreen()));
           if (created == true) await prov.loadPosts();

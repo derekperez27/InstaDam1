@@ -64,121 +64,128 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
     return Scaffold(
       body: Stack(
         children: [
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [Color(0xFF1E1622), Color(0xFF2B2430)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Color(0xFF5D068A), Color(0xFFFF2A7B)],
               ),
             ),
           ),
-          const Positioned.fill(
-            child: IgnorePointer(
-              child: CustomPaint(painter: _DiagonalTexturePainter()),
-            ),
+          Positioned(
+            left: -50,
+            top: -40,
+            child: Container(width: 180, height: 180, decoration: BoxDecoration(color: Colors.white.withAlpha((0.08 * 255).round()), shape: BoxShape.circle)),
           ),
-          Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24.0),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 420),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: const [
-                      BoxShadow(color: Colors.black54, blurRadius: 24, offset: Offset(0, 8)),
-                    ],
-                  ),
-                  child: Card(
-                    color: const Color(0xFF1C1A1D),
-                    shadowColor: Colors.black87,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      side: const BorderSide(color: Colors.black87, width: 2),
-                    ),
-                    elevation: 20,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 28.0),
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              width: 84,
-                              height: 84,
-                              decoration: BoxDecoration(
-                                color: theme.colorScheme.onPrimary.withAlpha((0.18 * 255).round()),
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(Icons.person, size: 44, color: Colors.white70),
-                            ),
-                            const SizedBox(height: 14),
-                            Text(
-                              _isLogin ? tr(context, 'login') : tr(context, 'register'),
-                              style: theme.textTheme.titleLarge?.copyWith(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 20),
-                            ),
-                            const SizedBox(height: 6),
-                            TextButton(
-                              onPressed: () => setState(() => _isLogin = !_isLogin),
-                              child: Text(_isLogin ? tr(context, 'dont_have_account') : tr(context, 'have_account')),
-                            ),
-                            const SizedBox(height: 8),
-                            TextFormField(
-                              controller: _userCtrl,
-                              decoration: InputDecoration(
-                                prefixIcon: const Icon(Icons.person_outline),
-                                hintText: tr(context, 'username'),
-                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                              ),
-                              validator: (v) => (v == null || v.trim().isEmpty) ? tr(context, 'enter_username') : null,
-                            ),
-                            const SizedBox(height: 12),
-                            TextFormField(
-                              controller: _passCtrl,
-                              decoration: InputDecoration(
-                                prefixIcon: const Icon(Icons.lock_outline),
-                                hintText: tr(context, 'password'),
-                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                              ),
-                              obscureText: true,
-                              validator: (v) => (v == null || v.isEmpty) ? tr(context, 'enter_password') : null,
-                            ),
-                            const SizedBox(height: 10),
-                            Row(
+          Positioned(
+            right: -40,
+            top: 20,
+            child: Container(width: 120, height: 120, decoration: BoxDecoration(color: Colors.white.withAlpha((0.06 * 255).round()), shape: BoxShape.circle)),
+          ),
+          SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 440),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 120,
+                        height: 120,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withAlpha((0.18 * 255).round()),
+                          shape: BoxShape.circle,
+                          boxShadow: [BoxShadow(color: Colors.black.withAlpha((0.25 * 255).round()), blurRadius: 12, offset: const Offset(0, 6))],
+                        ),
+                        child: const Icon(Icons.person, size: 64, color: Colors.white),
+                      ),
+                      const SizedBox(height: 18),
+                      Text(
+                        _isLogin ? tr(context, 'login') : tr(context, 'register'),
+                        style: theme.textTheme.titleLarge?.copyWith(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 22),
+                      ),
+                      const SizedBox(height: 10),
+                      Card(
+                        color: Colors.white.withAlpha((0.06 * 255).round()),
+                        elevation: 8,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 20.0),
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                Checkbox(value: _remember, onChanged: (v) => setState(() => _remember = v ?? false)),
-                                const SizedBox(width: 8),
-                                Expanded(child: Text(tr(context, 'remember_user'))),
+                                TextFormField(
+                                  controller: _userCtrl,
+                                  decoration: InputDecoration(
+                                    prefixIcon: const Icon(Icons.person_outline),
+                                    hintText: tr(context, 'username'),
+                                    filled: true,
+                                    fillColor: Colors.white.withAlpha((0.04 * 255).round()),
+                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                                  ),
+                                  validator: (v) => (v == null || v.trim().isEmpty) ? tr(context, 'enter_username') : null,
+                                ),
+                                const SizedBox(height: 12),
+                                TextFormField(
+                                  controller: _passCtrl,
+                                  decoration: InputDecoration(
+                                    prefixIcon: const Icon(Icons.lock_outline),
+                                    hintText: tr(context, 'password'),
+                                    filled: true,
+                                    fillColor: Colors.white.withAlpha((0.04 * 255).round()),
+                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                                  ),
+                                  obscureText: true,
+                                  validator: (v) => (v == null || v.isEmpty) ? tr(context, 'enter_password') : null,
+                                ),
+                                const SizedBox(height: 12),
+                                Row(
+                                  children: [
+                                    Checkbox(value: _remember, onChanged: (v) => setState(() => _remember = v ?? false)),
+                                    const SizedBox(width: 8),
+                                    Expanded(child: Text(tr(context, 'remember_user'), style: const TextStyle(color: Colors.white70))),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
+                                SizedBox(
+                                  width: double.infinity,
+                                  height: 48,
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFFFFC44D),
+                                      foregroundColor: Colors.black87,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                    ),
+                                    onPressed: _isLogin ? _onLogin : _onRegister,
+                                    child: Text(_isLogin ? tr(context, 'login') : tr(context, 'register')),
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                TextButton(
+                                  onPressed: () => setState(() => _isLogin = !_isLogin),
+                                  child: Text(_isLogin ? tr(context, 'dont_have_account') : tr(context, 'have_account'), style: const TextStyle(color: Colors.white70)),
+                                ),
+                                if (_isLogin)
+                                  TextButton(
+                                    onPressed: () {
+                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(tr(context, 'forgot_password_not_impl'))));
+                                    },
+                                    child: Text(tr(context, 'forgot_password'), style: const TextStyle(color: Colors.white70)),
+                                  ),
                               ],
                             ),
-                            const SizedBox(height: 12),
-                            SizedBox(
-                              width: double.infinity,
-                              height: 48,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
-                                onPressed: _isLogin ? _onLogin : _onRegister,
-                                child: Text(_isLogin ? tr(context, 'login') : tr(context, 'register')),
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            if (_isLogin)
-                              TextButton(
-                                onPressed: () {
-                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(tr(context, 'forgot_password_not_impl'))));
-                                },
-                                child: Text(tr(context, 'forgot_password')),
-                              ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
               ),
@@ -188,27 +195,6 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-}
-
-class _DiagonalTexturePainter extends CustomPainter {
-  static const double _opacity = 0.02;
-  const _DiagonalTexturePainter();
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white.withAlpha((_opacity * 255).round())
-      ..strokeWidth = 1.0
-      ..isAntiAlias = true;
-
-    const spacing = 18.0;
-    for (double x = -size.height; x < size.width; x += spacing) {
-      canvas.drawLine(Offset(x, 0), Offset(x + size.height, size.height), paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant _DiagonalTexturePainter oldDelegate) => false;
 }
  
 
