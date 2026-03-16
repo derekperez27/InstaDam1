@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../services/auth_service.dart';
 import '../providers/app_provider.dart';
+import '../services/auth_service.dart';
 import '../utils/loc.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _userCtrl = TextEditingController();
   final TextEditingController _passCtrl = TextEditingController();
@@ -20,10 +20,12 @@ class _LoginScreenState extends State<LoginScreen> {
   final FocusNode _passFocus = FocusNode();
   final FocusNode _rememberFocus = FocusNode();
   final FocusNode _submitFocus = FocusNode();
+
+  final AuthService _auth = AuthService();
+
   bool _remember = false;
   bool _isLoading = false;
   String? _globalError;
-  final AuthService _auth = AuthService();
 
   @override
   void dispose() {
@@ -36,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  Future<void> _onLogin() async {
+  Future<void> _onRegister() async {
     setState(() {
       _globalError = null;
     });
@@ -50,22 +52,20 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final username = _userCtrl.text.trim();
     final password = _passCtrl.text;
-    final user = await _auth.login(username, password, remember: _remember);
+    final user = await _auth.register(username, password, remember: _remember);
+
     if (!mounted) return;
 
-    if (user != null) {
-      Provider.of<AppProvider>(context, listen: false).setCurrentUser(user);
-      Navigator.pushReplacementNamed(context, '/home');
-      return;
-    } else {
+    if (user == null) {
       setState(() {
-        _globalError = tr(context, 'invalid_credentials');
+        _globalError = tr(context, 'user_exists');
+        _isLoading = false;
       });
+      return;
     }
 
-    setState(() {
-      _isLoading = false;
-    });
+    Provider.of<AppProvider>(context, listen: false).setCurrentUser(user);
+    Navigator.pushReplacementNamed(context, '/home');
   }
 
   InputDecoration _inputDecoration(String hint) {
@@ -99,6 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
     return Scaffold(
       body: Stack(
         children: [
@@ -114,12 +115,26 @@ class _LoginScreenState extends State<LoginScreen> {
           Positioned(
             left: -50,
             top: -40,
-            child: Container(width: 180, height: 180, decoration: BoxDecoration(color: Colors.white.withAlpha((0.08 * 255).round()), shape: BoxShape.circle)),
+            child: Container(
+              width: 180,
+              height: 180,
+              decoration: BoxDecoration(
+                color: Colors.white.withAlpha((0.08 * 255).round()),
+                shape: BoxShape.circle,
+              ),
+            ),
           ),
           Positioned(
             right: -40,
             top: 20,
-            child: Container(width: 120, height: 120, decoration: BoxDecoration(color: Colors.white.withAlpha((0.06 * 255).round()), shape: BoxShape.circle)),
+            child: Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                color: Colors.white.withAlpha((0.06 * 255).round()),
+                shape: BoxShape.circle,
+              ),
+            ),
           ),
           SafeArea(
             child: Center(
@@ -136,14 +151,24 @@ class _LoginScreenState extends State<LoginScreen> {
                         decoration: BoxDecoration(
                           color: Colors.white.withAlpha((0.18 * 255).round()),
                           shape: BoxShape.circle,
-                          boxShadow: [BoxShadow(color: Colors.black.withAlpha((0.25 * 255).round()), blurRadius: 12, offset: const Offset(0, 6))],
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withAlpha((0.25 * 255).round()),
+                              blurRadius: 12,
+                              offset: const Offset(0, 6),
+                            ),
+                          ],
                         ),
-                        child: const Icon(Icons.person, size: 64, color: Colors.white),
+                        child: const Icon(Icons.person_add_alt_1, size: 64, color: Colors.white),
                       ),
                       const SizedBox(height: 18),
                       Text(
-                        tr(context, 'login'),
-                        style: theme.textTheme.titleLarge?.copyWith(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 22),
+                        tr(context, 'register'),
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 22,
+                        ),
                       ),
                       const SizedBox(height: 10),
                       Card(
@@ -169,7 +194,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onFieldSubmitted: (_) {
                                     FocusScope.of(context).requestFocus(_passFocus);
                                   },
-                                  validator: (v) => (v == null || v.trim().isEmpty) ? tr(context, 'enter_username') : null,
+                                  validator: (v) {
+                                    if (v == null || v.trim().isEmpty) {
+                                      return tr(context, 'enter_username');
+                                    }
+                                    if (v.trim().length < 3) {
+                                      return tr(context, 'username_min_chars');
+                                    }
+                                    return null;
+                                  },
                                 ),
                                 const SizedBox(height: 12),
                                 _fieldLabel(tr(context, 'password')),
@@ -184,7 +217,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onFieldSubmitted: (_) {
                                     FocusScope.of(context).requestFocus(_rememberFocus);
                                   },
-                                  validator: (v) => (v == null || v.isEmpty) ? tr(context, 'enter_password') : null,
+                                  validator: (v) {
+                                    if (v == null || v.isEmpty) {
+                                      return tr(context, 'enter_password');
+                                    }
+                                    if (v.length < 6) {
+                                      return tr(context, 'password_min_chars');
+                                    }
+                                    return null;
+                                  },
                                 ),
                                 const SizedBox(height: 12),
                                 Semantics(
@@ -228,7 +269,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 Semantics(
                                   button: true,
                                   enabled: !_isLoading,
-                                  label: _isLoading ? tr(context, 'logging_in') : tr(context, 'login'),
+                                  label: _isLoading ? tr(context, 'registering') : tr(context, 'register'),
                                   child: ElevatedButton(
                                     focusNode: _submitFocus,
                                     style: ElevatedButton.styleFrom(
@@ -237,7 +278,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                       minimumSize: const Size(double.infinity, 48),
                                     ),
-                                    onPressed: _isLoading ? null : _onLogin,
+                                    onPressed: _isLoading ? null : _onRegister,
                                     child: _isLoading
                                         ? Row(
                                             mainAxisSize: MainAxisSize.min,
@@ -248,24 +289,23 @@ class _LoginScreenState extends State<LoginScreen> {
                                                 child: CircularProgressIndicator(strokeWidth: 2),
                                               ),
                                               const SizedBox(width: 10),
-                                              Text(tr(context, 'logging_in')),
+                                              Text(tr(context, 'registering')),
                                             ],
                                           )
-                                        : Text(tr(context, 'login')),
+                                        : Text(tr(context, 'register')),
                                   ),
                                 ),
                                 const SizedBox(height: 8),
                                 TextButton(
-                                  onPressed: _isLoading ? null : () => Navigator.pushNamed(context, '/register'),
-                                  child: Text(tr(context, 'dont_have_account'), style: const TextStyle(color: Colors.white70)),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _globalError = tr(context, 'forgot_password_not_impl');
-                                    });
-                                  },
-                                  child: Text(tr(context, 'forgot_password'), style: const TextStyle(color: Colors.white70)),
+                                  onPressed: _isLoading
+                                      ? null
+                                      : () {
+                                          Navigator.pop(context);
+                                        },
+                                  child: Text(
+                                    tr(context, 'have_account'),
+                                    style: const TextStyle(color: Colors.white70),
+                                  ),
                                 ),
                               ],
                             ),
@@ -283,5 +323,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
- 
-
