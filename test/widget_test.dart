@@ -5,15 +5,17 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
 import 'package:instadam/main.dart';
 import 'package:instadam/providers/app_provider.dart';
+import 'package:instadam/screens/login_screen.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('Splash announces loading state and navigates to login', (
+    WidgetTester tester,
+  ) async {
     // Build our app wrapped with the required provider and trigger a frame.
     await tester.pumpWidget(
       ChangeNotifierProvider(
@@ -22,10 +24,12 @@ void main() {
       ),
     );
 
-    // Let the splash screen's delayed future run to avoid pending timers.
-    await tester.pump(const Duration(milliseconds: 900));
+    expect(find.text('InstaDAM'), findsOneWidget);
+    expect(find.text('Loading application'), findsOneWidget);
 
-    // Verify the app builds (MaterialApp is present).
-    expect(find.byType(MaterialApp), findsOneWidget);
+    await tester.pump(const Duration(milliseconds: 1900));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(LoginScreen), findsOneWidget);
   });
 }

@@ -24,6 +24,8 @@ String tr(BuildContext context, String key, [Map<String, String>? args]) {
       'remember_user': 'Remember user',
       'login': 'Login',
       'register': 'Register',
+      'app_name': 'InstaDAM',
+      'app_loading': 'Loading application',
       'logging_in': 'Signing in...',
       'registering': 'Creating account...',
       'enter_username': 'Enter your username',
@@ -61,8 +63,8 @@ String tr(BuildContext context, String key, [Map<String, String>? args]) {
       'user_exists': 'User already exists',
       'save': 'Save',
       'logout': 'Logout',
-        'export': 'Export',
-        'import': 'Import',
+      'export': 'Export',
+      'import': 'Import',
     },
     'es': {
       'feed': 'Feed',
@@ -74,6 +76,8 @@ String tr(BuildContext context, String key, [Map<String, String>? args]) {
       'remember_user': 'Recordar usuario',
       'login': 'Iniciar sesión',
       'register': 'Registrarse',
+      'app_name': 'InstaDAM',
+      'app_loading': 'Cargando aplicacion',
       'logging_in': 'Iniciando sesión...',
       'registering': 'Creando cuenta...',
       'enter_username': 'Introduce el usuario',
@@ -83,7 +87,8 @@ String tr(BuildContext context, String key, [Map<String, String>? args]) {
       'dont_have_account': 'No tienes cuenta? Regístrate',
       'have_account': 'Ya tienes cuenta? Inicia sesión',
       'forgot_password': 'He olvidado mi contraseña',
-      'forgot_password_not_impl': 'La recuperación de contraseña aún no está disponible',
+      'forgot_password_not_impl':
+          'La recuperación de contraseña aún no está disponible',
       'settings': 'Ajustes',
       'dark_mode': 'Modo oscuro',
       'notifications': 'Notificaciones',
@@ -113,7 +118,7 @@ String tr(BuildContext context, String key, [Map<String, String>? args]) {
       'logout': 'Cerrar sesión',
       'export': 'Exportar',
       'import': 'Importar',
-    }
+    },
   };
 
   var s = translations[lang]?[key] ?? translations['en']?[key] ?? key;

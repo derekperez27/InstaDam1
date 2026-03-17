@@ -1,124 +1,141 @@
 import 'package:flutter/material.dart';
-import '../routes/app_routes.dart';
+import 'package:flutter/semantics.dart';
 
-class SplashScreen extends StatelessWidget {
+import '../routes/app_routes.dart';
+import '../themes/app_theme.dart';
+import '../utils/loc.dart';
+
+class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
   @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  static const Duration _navigationDelay = Duration(milliseconds: 1800);
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _announceSplash();
+      _navigateToNextScreen();
+    });
+  }
+
+  Future<void> _announceSplash() async {
+    final direction = Directionality.of(context);
+    final view = View.of(context);
+    SemanticsService.sendAnnouncement(view, tr(context, 'app_name'), direction);
+    await Future<void>.delayed(const Duration(milliseconds: 350));
+    if (!mounted) return;
+    SemanticsService.sendAnnouncement(
+      view,
+      tr(context, 'app_loading'),
+      direction,
+    );
+  }
+
+  Future<void> _navigateToNextScreen() async {
+    await Future<void>.delayed(_navigationDelay);
+    if (!mounted) return;
+    Navigator.of(context).pushReplacementNamed(AppRoutes.login);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    final theme = Theme.of(context);
 
     return Scaffold(
       body: Stack(
+        fit: StackFit.expand,
         children: [
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Color(0xFF5D068A), Color(0xFFFF2A7B)],
-              ),
+          const DecoratedBox(
+            decoration: BoxDecoration(color: AppColors.surface),
+          ),
+          const Positioned(
+            top: -72,
+            right: -24,
+            child: ExcludeSemantics(
+              child: _DecorativeCircle(size: 184, color: AppColors.surfaceTint),
             ),
           ),
-          // Decorative bubbles
-          Positioned(
-            left: -size.width * 0.15,
-            top: -size.width * 0.12,
-            child: _Bubble(size: size.width * 0.45, opacity: 0.08),
-          ),
-          Positioned(
-            right: -size.width * 0.18,
-            top: size.width * 0.05,
-            child: _Bubble(size: size.width * 0.32, opacity: 0.06),
-          ),
-          Positioned(
-            left: size.width * 0.1,
-            bottom: -size.width * 0.1,
-            child: _Bubble(size: size.width * 0.36, opacity: 0.05),
+          const Positioned(
+            bottom: -88,
+            left: -36,
+            child: ExcludeSemantics(
+              child: _DecorativeCircle(size: 220, color: AppColors.surfaceTint),
+            ),
           ),
           SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: const [
-                      Icon(Icons.menu, color: Colors.white70),
-                    ],
-                  ),
-                  const SizedBox(height: 28),
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: 120,
-                          height: 120,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withAlpha((0.18 * 255).round()),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Semantics(
+                      container: true,
+                      header: true,
+                      label: tr(context, 'app_name'),
+                      child: ExcludeSemantics(
+                        child: Container(
+                          width: 112,
+                          height: 112,
+                          decoration: const BoxDecoration(
+                            color: AppColors.primary,
                             shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(color: Colors.black.withAlpha((0.25 * 255).round()), blurRadius: 12, offset: Offset(0, 6)),
-                            ],
                           ),
-                          child: const Icon(Icons.person, size: 64, color: Colors.white),
-                        ),
-                        const SizedBox(height: 18),
-                        const Text(
-                          'WELCOME',
-                          style: TextStyle(
+                          alignment: Alignment.center,
+                          child: const Icon(
+                            Icons.camera_alt_rounded,
+                            size: 52,
                             color: Colors.white,
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1.6,
                           ),
                         ),
-                        const SizedBox(height: 14),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: List.generate(4, (i) => _Dot(isActive: i == 0)),
-                        ),
-                        const SizedBox(height: 28),
-                        ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 360),
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                width: double.infinity,
-                                height: 48,
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFFFFC44D),
-                                    foregroundColor: Colors.black87,
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                  ),
-                                  onPressed: () => Navigator.pushNamed(context, AppRoutes.login),
-                                  child: const Text('Login', style: TextStyle(fontWeight: FontWeight.w700)),
-                                ),
-                              ),
-                              const SizedBox(height: 12),
-                              SizedBox(
-                                width: double.infinity,
-                                height: 48,
-                                child: OutlinedButton(
-                                  style: OutlinedButton.styleFrom(
-                                    foregroundColor: Colors.white,
-                                    side: const BorderSide(color: Colors.white24),
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                  ),
-                                  onPressed: () => Navigator.pushNamed(context, AppRoutes.login),
-                                  child: const Text('Create account', style: TextStyle(fontWeight: FontWeight.w600)),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 24),
+                    ExcludeSemantics(
+                      child: Text(
+                        tr(context, 'app_name'),
+                        style: theme.textTheme.headlineMedium?.copyWith(
+                          color: AppColors.textPrimary,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.3,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Semantics(
+                      container: true,
+                      liveRegion: true,
+                      label: tr(context, 'app_loading'),
+                      child: ExcludeSemantics(
+                        child: Column(
+                          children: [
+                            const SizedBox(
+                              width: 28,
+                              height: 28,
+                              child: CircularProgressIndicator(strokeWidth: 3),
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              tr(context, 'app_loading'),
+                              textAlign: TextAlign.center,
+                              style: theme.textTheme.bodyLarge?.copyWith(
+                                color: AppColors.textSecondary,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -128,40 +145,17 @@ class SplashScreen extends StatelessWidget {
   }
 }
 
-class _Bubble extends StatelessWidget {
+class _DecorativeCircle extends StatelessWidget {
   final double size;
-  final double opacity;
-  const _Bubble({required this.size, required this.opacity});
+  final Color color;
+  const _DecorativeCircle({required this.size, required this.color});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: size,
       height: size,
-      decoration: BoxDecoration(
-        color: Colors.white.withAlpha((opacity * 255).round()),
-        shape: BoxShape.circle,
-      ),
-    );
-  }
-}
-
-class _Dot extends StatelessWidget {
-  final bool isActive;
-  const _Dot({this.isActive = false});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4.0),
-      child: Container(
-        width: isActive ? 12 : 8,
-        height: isActive ? 12 : 8,
-        decoration: BoxDecoration(
-          color: isActive ? Colors.white : Colors.white24,
-          shape: BoxShape.circle,
-        ),
-      ),
+      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
     );
   }
 }
