@@ -52,23 +52,68 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
                 child: Row(
                   children: [
-                    IconButton(
-                      onPressed: () => Navigator.of(context).maybePop(),
-                      icon: const Icon(Icons.arrow_back, color: Colors.white),
+                    Semantics(
+                      button: true,
+                      label: tr(context, 'go_back'),
+                      child: ExcludeSemantics(
+                        child: IconButton(
+                          onPressed: () => Navigator.of(context).maybePop(),
+                          icon: const Icon(Icons.arrow_back, color: Colors.white),
+                        ),
+                      ),
                     ),
                     const SizedBox(width: 4),
-                    Text(tr(context, 'feed'), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 20)),
+                    Semantics(
+                      header: true,
+                      child: ExcludeSemantics(
+                        child: Text(
+                          tr(context, 'feed'),
+                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 20),
+                        ),
+                      ),
+                    ),
                     const Spacer(),
-                    IconButton(onPressed: () => Navigator.of(context).pushNamed('/profile'), icon: const Icon(Icons.person, color: Colors.white)),
-                    IconButton(onPressed: () => Navigator.of(context).pushNamed('/settings'), icon: const Icon(Icons.settings, color: Colors.white)),
+                    Semantics(
+                      button: true,
+                      label: tr(context, 'open_profile'),
+                      child: ExcludeSemantics(
+                        child: IconButton(
+                          onPressed: () => Navigator.of(context).pushNamed('/profile'),
+                          icon: const Icon(Icons.person, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    Semantics(
+                      button: true,
+                      label: tr(context, 'open_settings'),
+                      child: ExcludeSemantics(
+                        child: IconButton(
+                          onPressed: () => Navigator.of(context).pushNamed('/settings'),
+                          icon: const Icon(Icons.settings, color: Colors.white),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
               Expanded(
                 child: _loading
-                    ? const Center(child: CircularProgressIndicator())
+                    ? Semantics(
+                        liveRegion: true,
+                        label: tr(context, 'loading_feed'),
+                        child: const Center(child: CircularProgressIndicator()),
+                      )
                     : prov.posts.isEmpty
-                        ? Center(child: Text(tr(context, 'no_posts'), style: const TextStyle(color: Colors.white70)))
+                        ? Semantics(
+                            liveRegion: true,
+                            label: tr(context, 'feed_empty_announcement'),
+                            child: Center(
+                              child: Text(
+                                tr(context, 'no_posts'),
+                                style: const TextStyle(color: Colors.white70),
+                              ),
+                            ),
+                          )
                         : RefreshIndicator(
                             color: accent,
                             onRefresh: () => prov.loadPosts(),
@@ -93,7 +138,11 @@ class _HomeScreenState extends State<HomeScreen> {
           final created = await Navigator.of(context).push(MaterialPageRoute(builder: (_) => const CreatePostScreen()));
           if (created == true) await prov.loadPosts();
         },
-        child: const Icon(Icons.add),
+        child: Semantics(
+          button: true,
+          label: tr(context, 'create_post_button'),
+          child: const ExcludeSemantics(child: Icon(Icons.add)),
+        ),
       ),
     );
   }
