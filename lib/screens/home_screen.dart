@@ -49,7 +49,10 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12.0,
+                  vertical: 8.0,
+                ),
                 child: Row(
                   children: [
                     Semantics(
@@ -58,7 +61,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: ExcludeSemantics(
                         child: IconButton(
                           onPressed: () => Navigator.of(context).maybePop(),
-                          icon: const Icon(Icons.arrow_back, color: Colors.white),
+                          icon: const Icon(
+                            Icons.arrow_back,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
@@ -68,7 +74,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: ExcludeSemantics(
                         child: Text(
                           tr(context, 'feed'),
-                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 20),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 20,
+                          ),
                         ),
                       ),
                     ),
@@ -78,7 +88,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       label: tr(context, 'open_profile'),
                       child: ExcludeSemantics(
                         child: IconButton(
-                          onPressed: () => Navigator.of(context).pushNamed('/profile'),
+                          onPressed: () =>
+                              Navigator.of(context).pushNamed('/profile'),
                           icon: const Icon(Icons.person, color: Colors.white),
                         ),
                       ),
@@ -88,7 +99,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       label: tr(context, 'open_settings'),
                       child: ExcludeSemantics(
                         child: IconButton(
-                          onPressed: () => Navigator.of(context).pushNamed('/settings'),
+                          onPressed: () =>
+                              Navigator.of(context).pushNamed('/settings'),
                           icon: const Icon(Icons.settings, color: Colors.white),
                         ),
                       ),
@@ -104,29 +116,33 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: const Center(child: CircularProgressIndicator()),
                       )
                     : prov.posts.isEmpty
-                        ? Semantics(
-                            liveRegion: true,
-                            label: tr(context, 'feed_empty_announcement'),
-                            child: Center(
-                              child: Text(
-                                tr(context, 'no_posts'),
-                                style: const TextStyle(color: Colors.white70),
-                              ),
-                            ),
-                          )
-                        : RefreshIndicator(
-                            color: accent,
-                            onRefresh: () => prov.loadPosts(),
-                            child: ListView.separated(
-                              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
-                              itemCount: prov.posts.length,
-                              separatorBuilder: (context, index) => const SizedBox(height: 14),
-                              itemBuilder: (context, i) => PostCard(
-                                post: prov.posts[i],
-                                // pass accent color to PostCard if it supports it (it will ignore if not)
-                              ),
-                            ),
+                    ? Semantics(
+                        liveRegion: true,
+                        label: tr(context, 'feed_empty_announcement'),
+                        child: Center(
+                          child: Text(
+                            tr(context, 'no_posts'),
+                            style: const TextStyle(color: Colors.white70),
                           ),
+                        ),
+                      )
+                    : RefreshIndicator(
+                        color: accent,
+                        onRefresh: () => prov.loadPosts(),
+                        child: ListView.separated(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20.0,
+                            vertical: 12.0,
+                          ),
+                          itemCount: prov.posts.length,
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: 14),
+                          itemBuilder: (context, i) => PostCard(
+                            post: prov.posts[i],
+                            // pass accent color to PostCard if it supports it (it will ignore if not)
+                          ),
+                        ),
+                      ),
               ),
             ],
           ),
@@ -135,8 +151,9 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: accent,
         onPressed: () async {
-          final created = await Navigator.of(context).push(MaterialPageRoute(builder: (_) => const CreatePostScreen()));
-          if (created == true) await prov.loadPosts();
+          await Navigator.of(
+            context,
+          ).push(MaterialPageRoute(builder: (_) => const CreatePostScreen()));
         },
         child: Semantics(
           button: true,

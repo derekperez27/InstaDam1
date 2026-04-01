@@ -59,6 +59,18 @@ String tr(BuildContext context, String key, [Map<String, String>? args]) {
       'create_post': 'Create post',
       'description': 'Description',
       'publish': 'Publish',
+      'create_post_description_label_required': 'Description (required)',
+      'create_post_description_field_label': 'Post description field',
+      'create_post_description_field_hint': 'Type the description for the post',
+      'create_post_description_error_required': 'Description is required',
+      'create_post_image_selector_no_image':
+          'Image selector. No image selected',
+      'create_post_image_selector_with_image': 'Image selector. Image selected',
+      'create_post_image_selector_hint': 'Double tap to choose an image',
+      'create_post_publishing': 'Publishing post',
+      'create_post_published_announcement': 'Post published successfully',
+      'create_post_publish_hint': 'Double tap to publish the post',
+      'create_post_loading_hint': 'Publishing in progress, please wait',
       'invalid_credentials': 'Invalid credentials',
       'user_exists': 'User already exists',
       'save': 'Save',
@@ -73,7 +85,8 @@ String tr(BuildContext context, String key, [Map<String, String>? args]) {
       'no_description': 'No description',
       'post_image_no_description': 'Post image without description',
       'post_image_description': 'Post image: {desc}',
-      'post_summary': 'Post by {author}, {time}. {description}. {likes} likes and {comments} comments.',
+      'post_summary':
+          'Post by {author}, {time}. {description}. {likes} likes and {comments} comments.',
       'open_post_details': 'Double tap to open post details and comments',
       'post_options': 'Post options',
       'post_deleted': 'Post deleted',
@@ -92,7 +105,8 @@ String tr(BuildContext context, String key, [Map<String, String>? args]) {
       'feed_empty_announcement': 'Feed is empty, no posts available',
       'create_post_button': 'Create post',
       'loading_comments': 'Loading comments',
-      'post_detail_summary': '{description}. {likes} likes and {comments} comments.',
+      'post_detail_summary':
+          '{description}. {likes} likes and {comments} comments.',
       'comment_item_semantics': 'Comment by {user}: {text}',
       'comment_field_label': 'Comment text field',
       'add_comment_hint': 'Add comment',
@@ -145,6 +159,22 @@ String tr(BuildContext context, String key, [Map<String, String>? args]) {
       'create_post': 'Crear publicación',
       'description': 'Descripción',
       'publish': 'Publicar',
+      'create_post_description_label_required': 'Descripción (obligatoria)',
+      'create_post_description_field_label':
+          'Campo de descripción de la publicación',
+      'create_post_description_field_hint':
+          'Escribe la descripción de la publicación',
+      'create_post_description_error_required': 'La descripción es obligatoria',
+      'create_post_image_selector_no_image':
+          'Selector de imagen. No hay imagen seleccionada',
+      'create_post_image_selector_with_image':
+          'Selector de imagen. Imagen seleccionada',
+      'create_post_image_selector_hint': 'Doble toque para elegir una imagen',
+      'create_post_publishing': 'Publicando publicación',
+      'create_post_published_announcement':
+          'Publicación publicada correctamente',
+      'create_post_publish_hint': 'Doble toque para publicar la publicación',
+      'create_post_loading_hint': 'Publicacion en progreso, espera por favor',
       'invalid_credentials': 'Credenciales inválidas',
       'user_exists': 'Usuario ya existe',
       'save': 'Guardar',
@@ -159,7 +189,8 @@ String tr(BuildContext context, String key, [Map<String, String>? args]) {
       'no_description': 'Sin descripcion',
       'post_image_no_description': 'Imagen de la publicacion sin descripcion',
       'post_image_description': 'Imagen de la publicacion: {desc}',
-      'post_summary': 'Publicacion de {author}, {time}. {description}. {likes} me gusta y {comments} comentarios.',
+      'post_summary':
+          'Publicacion de {author}, {time}. {description}. {likes} me gusta y {comments} comentarios.',
       'open_post_details': 'Doble toque para abrir detalles y comentarios',
       'post_options': 'Opciones de la publicacion',
       'post_deleted': 'Publicacion eliminada',
@@ -178,7 +209,8 @@ String tr(BuildContext context, String key, [Map<String, String>? args]) {
       'feed_empty_announcement': 'El feed esta vacio, no hay publicaciones',
       'create_post_button': 'Crear publicacion',
       'loading_comments': 'Cargando comentarios',
-      'post_detail_summary': '{description}. {likes} me gusta y {comments} comentarios.',
+      'post_detail_summary':
+          '{description}. {likes} me gusta y {comments} comentarios.',
       'comment_item_semantics': 'Comentario de {user}: {text}',
       'comment_field_label': 'Campo de texto de comentario',
       'add_comment_hint': 'Anadir comentario',
