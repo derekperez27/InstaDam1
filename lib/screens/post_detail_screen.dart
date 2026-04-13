@@ -19,6 +19,20 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   final _ctrl = TextEditingController();
   bool _loading = true;
 
+  String _formatRelativeTime(BuildContext context, int createdAtMs) {
+    final diff = DateTime.now().difference(
+      DateTime.fromMillisecondsSinceEpoch(createdAtMs),
+    );
+    if (diff.inMinutes < 1) return tr(context, 'time_now');
+    if (diff.inHours < 1) {
+      return tr(context, 'time_minutes_ago', {'n': '${diff.inMinutes}'});
+    }
+    if (diff.inDays < 1) {
+      return tr(context, 'time_hours_ago', {'n': '${diff.inHours}'});
+    }
+    return tr(context, 'time_days_ago', {'n': '${diff.inDays}'});
+  }
+
   @override
   void initState() {
     super.initState();
@@ -42,11 +56,45 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     if (text.isEmpty) return;
     final prov = Provider.of<AppProvider>(context, listen: false);
     final username = prov.currentUser?.username ?? 'anon';
-    final comment = Comment(postId: widget.post.id ?? 0, username: username, text: text, createdAt: DateTime.now().millisecondsSinceEpoch);
+    final comment = Comment(
+      postId: widget.post.id ?? 0,
+      username: username,
+      text: text,
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+    );
     await prov.addComment(comment);
     _ctrl.clear();
     if (!mounted) return;
-    final message = tr(context, 'comment_added');
+    final total = prov.commentsForPost(widget.post.id ?? 0).length;
+    final message = tr(context, 'comment_added_with_count', {'n': '$total'});
+    final direction = Directionality.of(context);
+    final view = View.of(context);
+    SemanticsService.sendAnnouncement(view, message, direction);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Semantics(liveRegion: true, child: Text(message))),
+    );
+  }
+
+  Future<void> _toggleLikeWithFeedback(bool isLiked) async {
+    final prov = Provider.of<AppProvider>(context, listen: false);
+    if (prov.currentUser == null) {
+      final message = tr(context, 'like_requires_login');
+      final direction = Directionality.of(context);
+      final view = View.of(context);
+      SemanticsService.sendAnnouncement(view, message, direction);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Semantics(liveRegion: true, child: Text(message))),
+      );
+      return;
+    }
+
+    await prov.toggleLike(widget.post);
+    if (!mounted) return;
+    final message = tr(
+      context,
+      isLiked ? 'unliked_announcement' : 'liked_announcement',
+      {'n': '${widget.post.likes}'},
+    );
     final direction = Directionality.of(context);
     final view = View.of(context);
     SemanticsService.sendAnnouncement(view, message, direction);
@@ -59,6 +107,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   Widget build(BuildContext context) {
     final prov = Provider.of<AppProvider>(context);
     final comments = prov.commentsForPost(widget.post.id ?? 0);
+    final isLiked = prov.isLikedByMe(widget.post.id ?? 0);
     return Scaffold(
       appBar: AppBar(title: Text(tr(context, 'post'))),
       body: _loading
@@ -74,31 +123,57 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                   padding: const EdgeInsets.all(12.0),
                   child: Semantics(
                     container: true,
-                    label: tr(
-                      context,
-                      'post_detail_summary',
-                      {
-                        'description': widget.post.description,
-                        'likes': '${widget.post.likes}',
-                        'comments': '${comments.length}',
-                      },
-                    ),
+                    label: tr(context, 'post_detail_summary', {
+                      'description': widget.post.description,
+                      'likes': '${widget.post.likes}',
+                      'comments': '${comments.length}',
+                    }),
                     child: ExcludeSemantics(
-                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Text(widget.post.description),
-                        const SizedBox(height: 8),
-                        Row(children: [
-                          Text(tr(context, 'likes', {'n': '${widget.post.likes}'}), style: const TextStyle(fontWeight: FontWeight.w600)),
-                          const SizedBox(width: 12),
-                          IconButton(
-                              onPressed: prov.currentUser == null
-                                  ? null
-                                  : () async {
-                                      await prov.toggleLike(widget.post);
-                                    },
-                              icon: Icon(prov.isLikedByMe(widget.post.id ?? 0) ? Icons.thumb_up : Icons.thumb_up_alt_outlined)),
-                        ]),
-                      ]),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(widget.post.description),
+                          const SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Text(
+                                tr(context, 'likes', {
+                                  'n': '${widget.post.likes}',
+                                }),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Semantics(
+                                button: true,
+                                enabled: prov.currentUser != null,
+                                toggled: isLiked,
+                                label: isLiked
+                                    ? tr(context, 'unlike_action')
+                                    : tr(context, 'like_action'),
+                                value: tr(context, 'likes', {
+                                  'n': '${widget.post.likes}',
+                                }),
+                                hint: tr(context, 'like_hint'),
+                                onTap: () => _toggleLikeWithFeedback(isLiked),
+                                child: ExcludeSemantics(
+                                  child: IconButton(
+                                    onPressed: () =>
+                                        _toggleLikeWithFeedback(isLiked),
+                                    icon: Icon(
+                                      isLiked
+                                          ? Icons.favorite
+                                          : Icons.favorite_border,
+                                    ),
+                                    color: isLiked ? Colors.redAccent : null,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -108,52 +183,113 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                       ? Semantics(
                           liveRegion: true,
                           label: tr(context, 'no_comments'),
-                          child: Center(child: Text(tr(context, 'no_comments'))),
+                          child: Center(
+                            child: Text(tr(context, 'no_comments')),
+                          ),
                         )
                       : ListView.builder(
                           itemCount: comments.length,
-                          itemBuilder: (_, i) => Semantics(
-                                label: tr(
-                                  context,
-                                  'comment_item_semantics',
-                                  {
-                                    'user': comments[i].username,
-                                    'text': comments[i].text,
-                                  },
-                                ),
-                                child: ExcludeSemantics(
-                                  child: ListTile(
-                                    title: Text(comments[i].username),
-                                    subtitle: Text(comments[i].text),
+                          itemBuilder: (_, i) {
+                            final comment = comments[i];
+                            final timeText = _formatRelativeTime(
+                              context,
+                              comment.createdAt,
+                            );
+                            return MergeSemantics(
+                              child: Semantics(
+                                container: true,
+                                label: tr(context, 'comment_item_semantics', {
+                                  'user': comment.username,
+                                  'text': comment.text,
+                                  'time': timeText,
+                                }),
+                                child: ListTile(
+                                  leading: ExcludeSemantics(
+                                    child: CircleAvatar(
+                                      child: Text(
+                                        comment.username.isNotEmpty
+                                            ? comment.username[0].toUpperCase()
+                                            : '?',
+                                      ),
+                                    ),
+                                  ),
+                                  title: ExcludeSemantics(
+                                    child: Text(comment.username),
+                                  ),
+                                  subtitle: ExcludeSemantics(
+                                    child: Text(comment.text),
+                                  ),
+                                  trailing: ExcludeSemantics(
+                                    child: Text(
+                                      timeText,
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.bodySmall,
+                                    ),
                                   ),
                                 ),
                               ),
+                            );
+                          },
                         ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Row(children: [
-                    Expanded(
-                      child: Semantics(
-                        textField: true,
-                        label: tr(context, 'comment_field_label'),
-                        child: TextField(
-                          controller: _ctrl,
-                          decoration: InputDecoration(
-                            hintText: tr(context, 'add_comment_hint'),
+                  child: FocusTraversalGroup(
+                    policy: OrderedTraversalPolicy(),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: FocusTraversalOrder(
+                            order: const NumericFocusOrder(1),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                ExcludeSemantics(
+                                  child: Text(
+                                    tr(context, 'comment_field_visible_label'),
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                Semantics(
+                                  textField: true,
+                                  label: tr(context, 'comment_field_label'),
+                                  hint: tr(context, 'add_comment_hint'),
+                                  child: TextField(
+                                    controller: _ctrl,
+                                    textInputAction: TextInputAction.send,
+                                    onSubmitted: (_) => _addComment(),
+                                    decoration: InputDecoration(
+                                      hintText: tr(context, 'add_comment_hint'),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
+                        FocusTraversalOrder(
+                          order: const NumericFocusOrder(2),
+                          child: Semantics(
+                            button: true,
+                            label: tr(context, 'send_comment_button'),
+                            hint: tr(context, 'send_comment_hint'),
+                            child: ExcludeSemantics(
+                              child: IconButton(
+                                onPressed: _addComment,
+                                icon: const Icon(Icons.send),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    Semantics(
-                      button: true,
-                      label: tr(context, 'send_comment_button'),
-                      child: ExcludeSemantics(
-                        child: IconButton(onPressed: _addComment, icon: const Icon(Icons.send)),
-                      ),
-                    )
-                  ]),
-                )
+                  ),
+                ),
               ],
             ),
     );

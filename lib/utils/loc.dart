@@ -107,11 +107,14 @@ String tr(BuildContext context, String key, [Map<String, String>? args]) {
       'loading_comments': 'Loading comments',
       'post_detail_summary':
           '{description}. {likes} likes and {comments} comments.',
-      'comment_item_semantics': 'Comment by {user}: {text}',
+      'comment_item_semantics': 'Comment by {user}, {time}: {text}',
       'comment_field_label': 'Comment text field',
+      'comment_field_visible_label': 'Comment',
       'add_comment_hint': 'Add comment',
       'send_comment_button': 'Send comment',
+      'send_comment_hint': 'Double tap to send comment',
       'comment_added': 'Comment added',
+      'comment_added_with_count': 'Comment added. Now {n} comments.',
     },
     'es': {
       'feed': 'Feed',
@@ -211,11 +214,15 @@ String tr(BuildContext context, String key, [Map<String, String>? args]) {
       'loading_comments': 'Cargando comentarios',
       'post_detail_summary':
           '{description}. {likes} me gusta y {comments} comentarios.',
-      'comment_item_semantics': 'Comentario de {user}: {text}',
+      'comment_item_semantics': 'Comentario de {user}, {time}: {text}',
       'comment_field_label': 'Campo de texto de comentario',
+      'comment_field_visible_label': 'Comentario',
       'add_comment_hint': 'Anadir comentario',
       'send_comment_button': 'Enviar comentario',
+      'send_comment_hint': 'Doble toque para enviar comentario',
       'comment_added': 'Comentario anadido',
+      'comment_added_with_count':
+          'Comentario anadido. Ahora hay {n} comentarios.',
     },
   };
 
