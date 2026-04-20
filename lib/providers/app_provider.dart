@@ -89,6 +89,19 @@ class AppProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> setCurrentUserAvatar(String avatarPath) async {
+    final user = _currentUser;
+    if (user == null || user.id == null) return;
+    await _db.updateUserAvatarPath(user.id!, avatarPath);
+    _currentUser = User(
+      id: user.id,
+      username: user.username,
+      password: user.password,
+      avatarPath: avatarPath,
+    );
+    notifyListeners();
+  }
+
   Future<void> setNotificationsEnabled(bool enabled) async {
     _notificationsEnabled = enabled;
     await _storage.setNotificationsEnabled(enabled);

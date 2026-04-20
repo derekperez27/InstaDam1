@@ -106,6 +106,16 @@ class DbService {
     return null;
   }
 
+  Future<int> updateUserAvatarPath(int userId, String avatarPath) async {
+    final db = await database;
+    return await db.update(
+      'users',
+      {'avatarPath': avatarPath},
+      where: 'id = ?',
+      whereArgs: [userId],
+    );
+  }
+
   // Posts
   Future<int> insertPost(Post p) async {
     final db = await database;

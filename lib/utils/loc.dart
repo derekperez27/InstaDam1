@@ -115,6 +115,30 @@ String tr(BuildContext context, String key, [Map<String, String>? args]) {
       'send_comment_hint': 'Double tap to send comment',
       'comment_added': 'Comment added',
       'comment_added_with_count': 'Comment added. Now {n} comments.',
+        'profile_avatar_semantics': 'Profile image of {user}',
+        'profile_stats_summary':
+          'Profile stats: {posts} posts, {followers} followers, {following} following.',
+        'posts_count_label': 'Posts',
+        'followers_count_label': 'Followers',
+        'following_count_label': 'Following',
+        'profile_default_bio': 'Bio of {user}.',
+        'profile_identity_summary':
+          'Profile of {username}. Name: {name}. Bio: {bio}.',
+        'edit_profile_button_label': 'Edit profile',
+        'edit_profile_button_hint': 'Double tap to edit your profile name',
+        'edit_profile_button_text': 'Edit profile',
+        'profile_name_label': 'Profile name',
+        'change_profile_photo': 'Change profile photo',
+        'change_profile_photo_hint': 'Double tap to select a new profile photo',
+        'profile_photo_selected': 'New profile photo selected',
+        'my_posts_grid_title': 'My posts',
+        'profile_grid_item_semantics':
+          'Post {index} of {total}. {description}. {likes} likes. Double tap to open.',
+        'filtered_feed_title': 'My feed (filtered by user)',
+        'cancel': 'Cancel',
+        'delete_post': 'Delete post',
+        'delete_post_confirm': 'Are you sure you want to delete this post?',
+        'delete': 'Delete',
     },
     'es': {
       'feed': 'Feed',
@@ -223,6 +247,30 @@ String tr(BuildContext context, String key, [Map<String, String>? args]) {
       'comment_added': 'Comentario anadido',
       'comment_added_with_count':
           'Comentario anadido. Ahora hay {n} comentarios.',
+        'profile_avatar_semantics': 'Imagen de perfil de {user}',
+        'profile_stats_summary':
+          'Estadisticas del perfil: {posts} publicaciones, {followers} seguidores, {following} seguidos.',
+        'posts_count_label': 'Publicaciones',
+        'followers_count_label': 'Seguidores',
+        'following_count_label': 'Siguiendo',
+        'profile_default_bio': 'Bio de {user}.',
+        'profile_identity_summary':
+          'Perfil de {username}. Nombre: {name}. Bio: {bio}.',
+        'edit_profile_button_label': 'Editar perfil',
+        'edit_profile_button_hint': 'Doble toque para editar el nombre del perfil',
+        'edit_profile_button_text': 'Editar perfil',
+        'profile_name_label': 'Nombre del perfil',
+        'change_profile_photo': 'Cambiar foto de perfil',
+        'change_profile_photo_hint': 'Doble toque para seleccionar una nueva foto de perfil',
+        'profile_photo_selected': 'Nueva foto de perfil seleccionada',
+        'my_posts_grid_title': 'Mis publicaciones',
+        'profile_grid_item_semantics':
+          'Publicacion {index} de {total}. {description}. {likes} me gusta. Doble toque para abrir.',
+        'filtered_feed_title': 'Mi feed (filtrado por usuario)',
+        'cancel': 'Cancelar',
+        'delete_post': 'Eliminar publicacion',
+        'delete_post_confirm': 'Seguro que quieres eliminar esta publicacion?',
+        'delete': 'Eliminar',
     },
   };
 
